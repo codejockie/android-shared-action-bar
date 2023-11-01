@@ -11,18 +11,20 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun SettingsScreen(
+    appBarState: AppBarState,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(key1 = Unit) {
-        Screen.Settings
-            .buttons
-            .onEach { button ->
+    val screen = appBarState.currentScreen as? Screen.Settings
+
+    LaunchedEffect(key1 = screen) {
+        screen?.buttons
+            ?.onEach { button ->
                 when (button) {
                     Screen.Settings.AppBarIcons.NavigationIcon -> onBackClick()
                 }
             }
-            .launchIn(this)
+            ?.launchIn(this)
     }
     Box(
         modifier = modifier,

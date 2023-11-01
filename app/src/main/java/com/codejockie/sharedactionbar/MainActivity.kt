@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                             route = HomeRoute,
                         ) {
                             HomeScreen(
+                                appBarState = appBarState,
                                 onSettingsClick = { navController.navigate(SettingsRoute) },
                                 toNoAppBarScreen = { navController.navigate(NoAppBarRoute) },
                                 toManyOptionsScreen = { navController.navigate(ManyOptionsRoute) },
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
                             route = ManyOptionsRoute,
                         ) {
                             ManyOptionsScreen(
+                                appBarState = appBarState,
                                 snackbarHostState = snackbarHostState,
                                 onBackClick = { navController.popBackStack() },
                                 modifier = Modifier.fillMaxSize(),
@@ -91,6 +93,7 @@ class MainActivity : ComponentActivity() {
                             route = SettingsRoute,
                         ) {
                             SettingsScreen(
+                                appBarState = appBarState,
                                 onBackClick = { navController.popBackStack() },
                                 modifier = Modifier.fillMaxSize(),
                             )
@@ -154,19 +157,22 @@ fun PlaygroundTopAppBar(
 
 @Composable
 fun HomeScreen(
+    appBarState: AppBarState,
     onSettingsClick: () -> Unit,
     toNoAppBarScreen: () -> Unit,
     toManyOptionsScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(key1 = Unit) {
-        Screen.Home.buttons
-            .onEach { button ->
+    val screen = appBarState.currentScreen as? Screen.Home
+
+    LaunchedEffect(key1 = screen) {
+        screen?.buttons
+            ?.onEach { button ->
                 when (button) {
                     Screen.Home.AppBarIcons.Settings -> onSettingsClick()
                 }
             }
-            .launchIn(this)
+            ?.launchIn(this)
     }
     Box(
         modifier = modifier,

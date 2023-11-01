@@ -21,11 +21,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ManyOptionsScreen(
+    appBarState: AppBarState,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val screen = appBarState.currentScreen as? Screen.ManyOptions
     var favouritesEnabled by remember { mutableStateOf(false) }
 
     fun showSnackbar(text: String) {
@@ -34,30 +36,29 @@ fun ManyOptionsScreen(
         }
     }
 
-    LaunchedEffect(key1 = Unit) {
-        Screen.ManyOptionsScreen
-            .buttons
-            .onEach { button ->
+    LaunchedEffect(key1 = screen) {
+        screen?.buttons
+            ?.onEach { button ->
                 when (button) {
-                    Screen.ManyOptionsScreen.AppBarIcons.NavigationIcon -> onBackClick()
-                    Screen.ManyOptionsScreen.AppBarIcons.Search,
-                    Screen.ManyOptionsScreen.AppBarIcons.Star,
-                    Screen.ManyOptionsScreen.AppBarIcons.Refresh,
-                    Screen.ManyOptionsScreen.AppBarIcons.Settings,
-                    Screen.ManyOptionsScreen.AppBarIcons.About -> showSnackbar(
+                    Screen.ManyOptions.AppBarIcons.NavigationIcon -> onBackClick()
+                    Screen.ManyOptions.AppBarIcons.Search,
+                    Screen.ManyOptions.AppBarIcons.Star,
+                    Screen.ManyOptions.AppBarIcons.Refresh,
+                    Screen.ManyOptions.AppBarIcons.Settings,
+                    Screen.ManyOptions.AppBarIcons.About -> showSnackbar(
                         "Clicked on ${button.name}"
                     )
 
-                    Screen.ManyOptionsScreen.AppBarIcons.Favourite -> {
+                    Screen.ManyOptions.AppBarIcons.Favourite -> {
                         favouritesEnabled = favouritesEnabled.not()
-                        Screen.ManyOptionsScreen.setFavouriteIcon(
+                        screen.setFavouriteIcon(
                             if (favouritesEnabled) Icons.Outlined.Favorite
                             else Icons.Outlined.FavoriteBorder
                         )
                     }
                 }
             }
-            .launchIn(this)
+            ?.launchIn(this)
     }
     Box(
         modifier = modifier,

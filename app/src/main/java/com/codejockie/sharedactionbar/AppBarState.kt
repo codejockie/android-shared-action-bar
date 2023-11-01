@@ -2,22 +2,34 @@ package com.codejockie.sharedactionbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Stable
 class AppBarState(
-    private val navController: NavController
+    navController: NavController,
+    scope: CoroutineScope
 ) {
-    private val currentScreenRoute: String?
-        @Composable get() = navController
-            .currentBackStackEntryAsState()
-            .value?.destination?.route
+    init {
+        navController.currentBackStackEntryFlow
+            .distinctUntilChanged()
+            .onEach { backStackEntry ->
+                val route = backStackEntry.destination.route
+                currentScreen = getScreen(route)
+            }
+            .launchIn(scope)
+    }
 
-    private val currentScreen: Screen?
-        @Composable get() = getScreen(currentScreenRoute)
+    var currentScreen by mutableStateOf<Screen?>(null)
 
     val isVisible: Boolean
         @Composable get() = currentScreen?.isAppBarVisible == true
@@ -40,5 +52,6 @@ class AppBarState(
 
 @Composable
 fun rememberAppBarState(
-    navController: NavController
-) = remember { AppBarState(navController) }
+    navController: NavController,
+    scope: CoroutineScope = rememberCoroutineScope()
+) = remember { AppBarState(navController, scope) }

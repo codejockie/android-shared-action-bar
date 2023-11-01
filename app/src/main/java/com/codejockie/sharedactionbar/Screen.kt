@@ -31,7 +31,7 @@ sealed interface Screen {
     val title: String
     val actions: List<ActionMenuItem>
 
-    object Home : Screen {
+    class Home : Screen {
         enum class AppBarIcons {
             Settings
         }
@@ -57,7 +57,7 @@ sealed interface Screen {
         )
     }
 
-    object Settings : Screen {
+    class Settings : Screen {
         override val route: String = SettingsRoute
         override val isAppBarVisible: Boolean = true
         override val navigationIcon: ImageVector = Icons.Outlined.ArrowBack
@@ -76,7 +76,7 @@ sealed interface Screen {
         val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
     }
 
-    object NoAppBar : Screen {
+    class NoAppBar : Screen {
         override val route: String = NoAppBarRoute
         override val isAppBarVisible: Boolean = false
         override val navigationIcon: ImageVector? = null
@@ -86,7 +86,7 @@ sealed interface Screen {
         override val actions: List<ActionMenuItem> = emptyList()
     }
 
-    object ManyOptionsScreen : Screen {
+    class ManyOptions : Screen {
         override val route: String = ManyOptionsRoute
         override val isAppBarVisible: Boolean = true
         override val navigationIcon: ImageVector = Icons.Default.ArrowBack
@@ -96,7 +96,7 @@ sealed interface Screen {
         override val navigationIconContentDescription: String? = null
         override val title: String = "Many Options"
 
-        private var _favouriteIcon by mutableStateOf<ImageVector>(Icons.Default.FavoriteBorder)
+        private var _favouriteIcon by mutableStateOf(Icons.Default.FavoriteBorder)
 
         override val actions: List<ActionMenuItem> by derivedStateOf {
             listOf(
@@ -166,6 +166,10 @@ sealed interface Screen {
     }
 }
 
-fun getScreen(route: String?): Screen? = Screen::class.nestedClasses.map { kClass ->
-    kClass.objectInstance as Screen
-}.firstOrNull { screen -> screen.route == route }
+fun getScreen(route: String?): Screen? = when (route) {
+    HomeRoute -> Screen.Home()
+    SettingsRoute -> Screen.Settings()
+    ManyOptionsRoute -> Screen.ManyOptions()
+    NoAppBarRoute -> Screen.NoAppBar()
+    else -> null
+}

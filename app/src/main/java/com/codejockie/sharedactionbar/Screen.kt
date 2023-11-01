@@ -1,14 +1,20 @@
 package com.codejockie.sharedactionbar
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 const val HomeRoute = "home"
+const val ManyOptionsRoute = "manyOptions"
 const val NoAppBarRoute = "noAppBar"
 const val SettingsRoute = "settings"
 
@@ -74,6 +80,78 @@ sealed interface Screen {
         override val navigationIconContentDescription: String? = null
         override val title: String = ""
         override val actions: List<ActionMenuItem> = emptyList()
+    }
+
+    object ManyOptionsScreen : Screen {
+        override val route: String = ManyOptionsRoute
+        override val isAppBarVisible: Boolean = true
+        override val navigationIcon: ImageVector = Icons.Default.ArrowBack
+        override val onNavigationIconClick: () -> Unit = {
+            _buttons.tryEmit(AppBarIcons.NavigationIcon)
+        }
+        override val navigationIconContentDescription: String? = null
+        override val title: String = "Many Options"
+
+        override val actions: List<ActionMenuItem> =
+            listOf(
+                ActionMenuItem.IconMenuItem.AlwaysShown(
+                    title = "Search",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.Search)
+                    },
+                    icon = Icons.Outlined.Search,
+                    contentDescription = null,
+                ),
+                ActionMenuItem.IconMenuItem.AlwaysShown(
+                    title = "Favorite",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.Favorite)
+                    },
+                    icon = Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                ),
+                ActionMenuItem.IconMenuItem.ShownIfRoom(
+                    title = "Star",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.Star)
+                    },
+                    icon = Icons.Outlined.Star,
+                    contentDescription = null,
+                ),
+                ActionMenuItem.IconMenuItem.ShownIfRoom(
+                    title = "Refresh",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.Refresh)
+                    },
+                    icon = Icons.Outlined.Refresh,
+                    contentDescription = null,
+                ),
+                ActionMenuItem.NeverShown(
+                    title = "Settings",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.Settings)
+                    },
+                ),
+                ActionMenuItem.NeverShown(
+                    title = "About",
+                    onClick = {
+                        _buttons.tryEmit(AppBarIcons.About)
+                    },
+                ),
+            )
+
+        enum class AppBarIcons {
+            NavigationIcon,
+            Search,
+            Favorite,
+            Star,
+            Refresh,
+            Settings,
+            About,
+        }
+
+        private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
+        val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
     }
 }
 

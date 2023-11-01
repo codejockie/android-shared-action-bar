@@ -73,9 +73,18 @@ class MainActivity : ComponentActivity() {
                             HomeScreen(
                                 onSettingsClick = { navController.navigate(SettingsRoute) },
                                 toNoAppBarScreen = { navController.navigate(NoAppBarRoute) },
-                                toManyOptionsScreen = { },
+                                toManyOptionsScreen = { navController.navigate(ManyOptionsRoute) },
                                 modifier = Modifier
                                     .fillMaxSize()
+                            )
+                        }
+                        composable(
+                            route = ManyOptionsRoute,
+                        ) {
+                            ManyOptionsScreen(
+                                snackbarHostState = snackbarHostState,
+                                onBackClick = { navController.popBackStack() },
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
                         composable(

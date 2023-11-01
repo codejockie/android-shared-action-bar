@@ -71,11 +71,19 @@ class MainActivity : ComponentActivity() {
                             route = HomeRoute,
                         ) {
                             HomeScreen(
-                                onSettingsClick = { },
+                                onSettingsClick = { navController.navigate(SettingsRoute) },
                                 toNoAppBarScreen = { },
                                 toManyOptionsScreen = { },
                                 modifier = Modifier
                                     .fillMaxSize()
+                            )
+                        }
+                        composable(
+                            route = SettingsRoute,
+                        ) {
+                            SettingsScreen(
+                                onBackClick = { navController.popBackStack() },
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
                     }

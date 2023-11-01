@@ -1,6 +1,7 @@
 package com.codejockie.sharedactionbar
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.flow.Flow
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 const val HomeRoute = "home"
+const val SettingsRoute = "settings"
 
 sealed interface Screen {
     val route: String
@@ -42,6 +44,25 @@ sealed interface Screen {
                 contentDescription = null,
             )
         )
+    }
+
+    object Settings : Screen {
+        override val route: String = SettingsRoute
+        override val isAppBarVisible: Boolean = true
+        override val navigationIcon: ImageVector = Icons.Outlined.ArrowBack
+        override val onNavigationIconClick: () -> Unit = {
+            _buttons.tryEmit(AppBarIcons.NavigationIcon)
+        }
+        override val navigationIconContentDescription: String? = null
+        override val title: String = "Settings"
+        override val actions: List<ActionMenuItem> = emptyList()
+
+        enum class AppBarIcons {
+            NavigationIcon
+        }
+
+        private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
+        val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
     }
 }
 

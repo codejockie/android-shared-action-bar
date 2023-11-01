@@ -34,3 +34,7 @@ sealed interface Screen {
         )
     }
 }
+
+fun getScreen(route: String?): Screen? = Screen::class.nestedClasses.map { kClass ->
+    kClass.objectInstance as Screen
+}.firstOrNull { screen -> screen.route == route }

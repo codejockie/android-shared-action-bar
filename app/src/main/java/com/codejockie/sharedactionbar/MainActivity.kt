@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codejockie.sharedactionbar.ui.theme.SharedActionBarTheme
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -132,6 +135,15 @@ fun HomeScreen(
     toManyOptionsScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    LaunchedEffect(key1 = Unit) {
+        Screen.Home.buttons
+            .onEach { button ->
+                when (button) {
+                    Screen.Home.AppBarIcons.Settings -> onSettingsClick()
+                }
+            }
+            .launchIn(this)
+    }
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,

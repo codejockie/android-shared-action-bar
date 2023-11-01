@@ -8,6 +8,10 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -92,7 +96,9 @@ sealed interface Screen {
         override val navigationIconContentDescription: String? = null
         override val title: String = "Many Options"
 
-        override val actions: List<ActionMenuItem> =
+        private var _favouriteIcon by mutableStateOf<ImageVector>(Icons.Default.FavoriteBorder)
+
+        override val actions: List<ActionMenuItem> by derivedStateOf {
             listOf(
                 ActionMenuItem.IconMenuItem.AlwaysShown(
                     title = "Search",
@@ -103,11 +109,11 @@ sealed interface Screen {
                     contentDescription = null,
                 ),
                 ActionMenuItem.IconMenuItem.AlwaysShown(
-                    title = "Favorite",
+                    title = "Favourite",
                     onClick = {
-                        _buttons.tryEmit(AppBarIcons.Favorite)
+                        _buttons.tryEmit(AppBarIcons.Favourite)
                     },
-                    icon = Icons.Default.FavoriteBorder,
+                    icon = _favouriteIcon,
                     contentDescription = null,
                 ),
                 ActionMenuItem.IconMenuItem.ShownIfRoom(
@@ -139,11 +145,16 @@ sealed interface Screen {
                     },
                 ),
             )
+        }
+
+        fun setFavouriteIcon(icon: ImageVector) {
+            _favouriteIcon = icon
+        }
 
         enum class AppBarIcons {
             NavigationIcon,
             Search,
-            Favorite,
+            Favourite,
             Star,
             Refresh,
             Settings,

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 const val HomeRoute = "home"
+const val NoAppBarRoute = "noAppBar"
 const val SettingsRoute = "settings"
 
 sealed interface Screen {
@@ -63,6 +64,16 @@ sealed interface Screen {
 
         private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
         val buttons: Flow<AppBarIcons> = _buttons.asSharedFlow()
+    }
+
+    object NoAppBar : Screen {
+        override val route: String = NoAppBarRoute
+        override val isAppBarVisible: Boolean = false
+        override val navigationIcon: ImageVector? = null
+        override val onNavigationIconClick: (() -> Unit)? = null
+        override val navigationIconContentDescription: String? = null
+        override val title: String = ""
+        override val actions: List<ActionMenuItem> = emptyList()
     }
 }
 

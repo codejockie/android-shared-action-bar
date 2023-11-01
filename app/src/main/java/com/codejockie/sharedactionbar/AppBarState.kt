@@ -16,7 +16,7 @@ class AppBarState(
             .currentBackStackEntryAsState()
             .value?.destination?.route
 
-    val currentScreen: Screen?
+    private val currentScreen: Screen?
         @Composable get() = getScreen(currentScreenRoute)
 
     val isVisible: Boolean

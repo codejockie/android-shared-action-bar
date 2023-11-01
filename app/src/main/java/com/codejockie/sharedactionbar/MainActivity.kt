@@ -9,13 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -85,20 +81,42 @@ fun HomeTopAppBar(
             )
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Outlined.Search, contentDescription = "Search")
-            }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Favourite")
-            }
-            IconButton(onClick = { menuExpanded = menuExpanded.not() }) {
-                Icon(Icons.Outlined.MoreVert, contentDescription = "More")
-            }
-            DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
-                DropdownMenuItem(text = { Text(text = "Refresh") }, onClick = { /*TODO*/ })
-                DropdownMenuItem(text = { Text(text = "Settings") }, onClick = { /*TODO*/ })
-                DropdownMenuItem(text = { Text(text = "About") }, onClick = { /*TODO*/ })
-            }
+            ActionsMenu(
+                // 3
+                items = listOf(
+                    ActionMenuItem.IconMenuItem.AlwaysShown(
+                        title = "Search",
+                        contentDescription = "Search",
+                        onClick = {},
+                        icon = Icons.Outlined.Search,
+                    ),
+                    ActionMenuItem.IconMenuItem.AlwaysShown(
+                        title = "Favourite",
+                        contentDescription = "Favourite",
+                        onClick = {},
+                        icon = Icons.Outlined.FavoriteBorder,
+                    ),
+                    ActionMenuItem.IconMenuItem.ShownIfRoom(
+                        title = "Refresh",
+                        contentDescription = "Refresh",
+                        onClick = {},
+                        icon = Icons.Outlined.Refresh
+                    ),
+                    ActionMenuItem.NeverShown(
+                        title = "Settings",
+                        onClick = {},
+                    ),
+                    ActionMenuItem.NeverShown(
+                        title = "About",
+                        onClick = {},
+                    ),
+                ),
+                // 4
+                isOpen = menuExpanded,
+                // 5
+                onToggleOverflow = { menuExpanded = !menuExpanded },
+                maxVisibleItems = 3,
+            )
         },
         modifier = modifier
     )

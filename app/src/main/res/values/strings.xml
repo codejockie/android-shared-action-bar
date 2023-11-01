@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SharedActionBar</string>
+    <string name="menu">Menu Items</string>
 </resources>

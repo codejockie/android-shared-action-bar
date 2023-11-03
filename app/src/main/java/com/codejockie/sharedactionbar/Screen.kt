@@ -67,13 +67,15 @@ sealed interface Screen {
                     onClick = {},
                     title = "add",
                     items = listOf(
-                        ActionMenuItem.NeverShown(
+                        ActionMenuItem.NeverShownWithIcon(
                             title = "Settings",
-                            onClick = {},
+                            onClick = { _buttons.tryEmit(AppBarIcons.Settings) },
+                            icon = Icons.Outlined.Settings
                         ),
-                        ActionMenuItem.NeverShown(
-                            title = "About",
+                        ActionMenuItem.NeverShownWithIcon(
+                            title = "Refresh",
                             onClick = {},
+                            icon = Icons.Outlined.Refresh
                         ),
                     )
                 ),
@@ -83,11 +85,11 @@ sealed interface Screen {
                     onClick = {},
                     title = "list",
                     items = listOf(
-                        ActionMenuItem.NeverShown(
+                        ActionMenuItem.NeverShownWithIcon(
                             title = "Info",
                             onClick = {},
                         ),
-                        ActionMenuItem.NeverShown(
+                        ActionMenuItem.NeverShownWithIcon(
                             title = "Contact Us",
                             onClick = {},
                         ),

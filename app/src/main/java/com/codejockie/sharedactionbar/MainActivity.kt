@@ -150,11 +150,11 @@ fun PlaygroundTopAppBar(
                     isOpen = menuExpanded,
                     onToggleOverflow = { menuExpanded = menuExpanded.not() },
                     maxVisibleItems = 3,
-                    expandDropMenus = mapOf(
+                    dropMenuExpandedStates = mapOf(
                         "add" to addDropMenu,
                         "list" to listDropMenu
                     ),
-                    onDropMenuItemClicks = mapOf(
+                    dropMenuItemOnClicks = mapOf(
                         "add" to { addDropMenu = addDropMenu.not() },
                         "list" to { listDropMenu = listDropMenu.not() }
                     ),

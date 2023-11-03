@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -72,32 +73,43 @@ fun ActionsMenu(
     isOpen: Boolean,
     onToggleOverflow: () -> Unit,
     maxVisibleItems: Int,
-    expandDropMenus: Map<String, Boolean> = emptyMap(),
-    onDropMenuItemClicks: Map<String, () -> Unit> = emptyMap(),
+    dropMenuExpandedStates: Map<String, Boolean> = emptyMap(),
+    dropMenuItemOnClicks: Map<String, () -> Unit> = emptyMap(),
     dropMenuItems: List<ActionMenuItem.IconMenuItem.DropMenu> = emptyList(),
 ) {
-    val menuItems = remember(key1 = items, key2 = maxVisibleItems) {
+    val menuItems = remember(key1 = items, key2 = maxVisibleItems, key3 = dropMenuItems) {
         splitMenuItems(items, maxVisibleItems, dropMenuItems)
     }
 
-    menuItems.visibleItems.forEach { item ->
-        val isDropMenu = item is ActionMenuItem.IconMenuItem.DropMenu
+    menuItems.visibleItems.forEach { menuItem ->
+        val isDropMenu = menuItem is ActionMenuItem.IconMenuItem.DropMenu
         if (!isDropMenu) {
-            IconButton(onClick = item.onClick) {
-                Icon(item.icon, contentDescription = item.contentDescription)
+            IconButton(onClick = menuItem.onClick) {
+                Icon(menuItem.icon, contentDescription = menuItem.contentDescription)
             }
         } else {
-            val onClick = onDropMenuItemClicks[item.title] ?: {}
+            val onClick = dropMenuItemOnClicks[menuItem.title] ?: {}
+            val expanded = dropMenuExpandedStates[menuItem.title] ?: false
+
             Box {
                 IconButton(onClick = onClick) {
-                    Icon(item.icon, contentDescription = item.contentDescription)
+                    Icon(menuItem.icon, contentDescription = menuItem.contentDescription)
                 }
                 DropdownMenu(
-                    expanded = expandDropMenus[item.title] ?: false,
+                    expanded = expanded,
                     onDismissRequest = onClick
                 ) {
-                    item.items?.forEach {
-                        DropdownMenuItem(text = { Text(it.title) }, onClick = it.onClick)
+                    menuItem.items?.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(item.title) },
+                            onClick = {
+                                item.onClick()
+                                onClick()
+                            },
+                            leadingIcon = if (item.icon is ImageVector) {
+                                { Icon(item.icon, item.title) }
+                            } else null
+                        )
                     }
                 }
             }

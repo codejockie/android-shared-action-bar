@@ -1,6 +1,7 @@
 package com.codejockie.sharedactionbar
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -35,9 +36,11 @@ private data class MenuItems(
 private fun splitMenuItems(
     items: List<ActionMenuItem>,
     maxVisibleItems: Int,
+    dropMenuItems: List<ActionMenuItem.IconMenuItem.DropMenu> = emptyList(),
 ): MenuItems {
+    // Combine dropMenuItems and alwaysShownItems
     val alwaysShownItems: MutableList<ActionMenuItem.IconMenuItem> =
-        items.filterIsInstance<ActionMenuItem.IconMenuItem.AlwaysShown>().toMutableList()
+        (dropMenuItems + items.filterIsInstance<ActionMenuItem.IconMenuItem.AlwaysShown>()).toMutableList()
     val ifRoomItems: MutableList<ActionMenuItem.IconMenuItem> =
         items.filterIsInstance<ActionMenuItem.IconMenuItem.ShownIfRoom>().toMutableList()
     val overflowItems = items.filterIsInstance<ActionMenuItem.NeverShown>()
@@ -69,24 +72,50 @@ fun ActionsMenu(
     isOpen: Boolean,
     onToggleOverflow: () -> Unit,
     maxVisibleItems: Int,
+    expandDropMenus: Map<String, Boolean> = emptyMap(),
+    onDropMenuItemClicks: Map<String, () -> Unit> = emptyMap(),
+    dropMenuItems: List<ActionMenuItem.IconMenuItem.DropMenu> = emptyList(),
 ) {
     val menuItems = remember(key1 = items, key2 = maxVisibleItems) {
-        splitMenuItems(items, maxVisibleItems)
+        splitMenuItems(items, maxVisibleItems, dropMenuItems)
     }
 
     menuItems.visibleItems.forEach { item ->
-        IconButton(onClick = item.onClick) {
-            Icon(item.icon, contentDescription = item.contentDescription)
+        val isDropMenu = item is ActionMenuItem.IconMenuItem.DropMenu
+        if (!isDropMenu) {
+            IconButton(onClick = item.onClick) {
+                Icon(item.icon, contentDescription = item.contentDescription)
+            }
+        } else {
+            val onClick = onDropMenuItemClicks[item.title] ?: {}
+            Box {
+                IconButton(onClick = onClick) {
+                    Icon(item.icon, contentDescription = item.contentDescription)
+                }
+                DropdownMenu(
+                    expanded = expandDropMenus[item.title] ?: false,
+                    onDismissRequest = onClick
+                ) {
+                    item.items?.forEach {
+                        DropdownMenuItem(text = { Text(it.title) }, onClick = it.onClick)
+                    }
+                }
+            }
         }
     }
 
     if (menuItems.overflowItems.isNotEmpty()) {
-        IconButton(onClick = onToggleOverflow) {
-            Icon(Icons.Outlined.MoreVert, contentDescription = stringResource(id = R.string.menu))
-        }
-        DropdownMenu(expanded = isOpen, onDismissRequest = onToggleOverflow) {
-            menuItems.overflowItems.forEach { item ->
-                DropdownMenuItem(text = { Text(item.title) }, onClick = item.onClick)
+        Box {
+            IconButton(onClick = onToggleOverflow) {
+                Icon(
+                    Icons.Outlined.MoreVert,
+                    contentDescription = stringResource(id = R.string.menu)
+                )
+            }
+            DropdownMenu(expanded = isOpen, onDismissRequest = onToggleOverflow) {
+                menuItems.overflowItems.forEach { item ->
+                    DropdownMenuItem(text = { Text(item.title) }, onClick = item.onClick)
+                }
             }
         }
     }

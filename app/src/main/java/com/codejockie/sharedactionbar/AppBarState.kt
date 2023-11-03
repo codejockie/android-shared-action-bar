@@ -48,6 +48,9 @@ class AppBarState(
 
     val actions: List<ActionMenuItem>
         @Composable get() = currentScreen?.actions.orEmpty()
+
+    val dropMenuItems: List<ActionMenuItem.IconMenuItem.DropMenu>
+        @Composable get() = currentScreen?.dropMenuItems.orEmpty()
 }
 
 @Composable

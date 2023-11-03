@@ -119,6 +119,8 @@ fun PlaygroundTopAppBar(
     modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
+    var addDropMenu by remember { mutableStateOf(false) }
+    var listDropMenu by remember { mutableStateOf(false) }
 
     TopAppBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -147,7 +149,16 @@ fun PlaygroundTopAppBar(
                     items = items,
                     isOpen = menuExpanded,
                     onToggleOverflow = { menuExpanded = menuExpanded.not() },
-                    maxVisibleItems = 3
+                    maxVisibleItems = 3,
+                    expandDropMenus = mapOf(
+                        "add" to addDropMenu,
+                        "list" to listDropMenu
+                    ),
+                    onDropMenuItemClicks = mapOf(
+                        "add" to { addDropMenu = addDropMenu.not() },
+                        "list" to { listDropMenu = listDropMenu.not() }
+                    ),
+                    dropMenuItems = appBarState.dropMenuItems
                 )
             }
         },

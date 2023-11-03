@@ -9,6 +9,8 @@ sealed interface ActionMenuItem {
     sealed interface IconMenuItem : ActionMenuItem {
         val icon: ImageVector
         val contentDescription: String?
+        val items: List<NeverShown>?
+            get() = null
 
         data class AlwaysShown(
             override val icon: ImageVector,
@@ -20,6 +22,14 @@ sealed interface ActionMenuItem {
         data class ShownIfRoom(
             override val icon: ImageVector,
             override val contentDescription: String?,
+            override val title: String,
+            override val onClick: () -> Unit,
+        ) : IconMenuItem
+
+        data class DropMenu(
+            override val icon: ImageVector,
+            override val contentDescription: String?,
+            override val items: List<NeverShown>,
             override val title: String,
             override val onClick: () -> Unit,
         ) : IconMenuItem

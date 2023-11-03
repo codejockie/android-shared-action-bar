@@ -3,7 +3,9 @@ package com.codejockie.sharedactionbar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
@@ -30,6 +32,8 @@ sealed interface Screen {
     val onNavigationIconClick: (() -> Unit)?
     val title: String
     val actions: List<ActionMenuItem>
+    val dropMenuItems: List<ActionMenuItem.IconMenuItem.DropMenu>
+        get() = emptyList()
 
     class Home : Screen {
         enum class AppBarIcons {
@@ -55,6 +59,41 @@ sealed interface Screen {
                 contentDescription = null,
             )
         )
+        override val dropMenuItems
+            get() = listOf(
+                ActionMenuItem.IconMenuItem.DropMenu(
+                    Icons.Outlined.Add,
+                    contentDescription = null,
+                    onClick = {},
+                    title = "add",
+                    items = listOf(
+                        ActionMenuItem.NeverShown(
+                            title = "Settings",
+                            onClick = {},
+                        ),
+                        ActionMenuItem.NeverShown(
+                            title = "About",
+                            onClick = {},
+                        ),
+                    )
+                ),
+                ActionMenuItem.IconMenuItem.DropMenu(
+                    Icons.Outlined.List,
+                    contentDescription = null,
+                    onClick = {},
+                    title = "list",
+                    items = listOf(
+                        ActionMenuItem.NeverShown(
+                            title = "Info",
+                            onClick = {},
+                        ),
+                        ActionMenuItem.NeverShown(
+                            title = "Contact Us",
+                            onClick = {},
+                        ),
+                    )
+                )
+            )
     }
 
     class Settings : Screen {

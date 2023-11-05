@@ -23,6 +23,7 @@ const val HomeRoute = "home"
 const val ManyOptionsRoute = "manyOptions"
 const val NoAppBarRoute = "noAppBar"
 const val SettingsRoute = "settings"
+const val OnboardingRoute = "onboarding"
 
 sealed interface Screen {
     val route: String

@@ -6,14 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,13 +38,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codejockie.sharedactionbar.ui.theme.SharedActionBarTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -173,8 +181,10 @@ fun HomeScreen(
     toNoAppBarScreen: () -> Unit,
     toManyOptionsScreen: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: ReceivingViewModel = hiltViewModel()
 ) {
     val screen = appBarState.currentScreen as? Screen.Home
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = screen) {
         screen?.buttons
@@ -185,30 +195,45 @@ fun HomeScreen(
             }
             ?.launchIn(this)
     }
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+
+    when {
+        uiState.value.isRefreshing -> Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center,
         ) {
-            Button(
-                onClick = toManyOptionsScreen
-            ) {
-                Text(
-                    text = "Many action bar items screen"
-                )
+            Row {
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = "Loading")
             }
-            Button(
-                onClick = toNoAppBarScreen
+        }
+        else -> Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center,
+        ) {
+            val t = uiState.value.transactions
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "No app bar screen"
-                )
+                Button(
+                    onClick = toManyOptionsScreen
+                ) {
+                    Text(
+                        text = "Many action bar items screen"
+                    )
+                }
+                Button(
+                    onClick = toNoAppBarScreen
+                ) {
+                    Text(
+                        text = "No app bar screen"
+                    )
+                }
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

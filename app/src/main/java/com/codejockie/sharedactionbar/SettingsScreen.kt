@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -30,6 +31,6 @@ fun SettingsScreen(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = "Settings content")
+        Text(text = stringResource(R.string.settings_content))
     }
 }

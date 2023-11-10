@@ -37,7 +37,9 @@ sealed interface Screen {
 
     class Home : Screen {
         enum class AppBarIcons {
-            Settings
+            Settings,
+            English,
+            Spanish
         }
 
         private val _buttons = MutableSharedFlow<AppBarIcons>(extraBufferCapacity = 1)
@@ -86,12 +88,16 @@ sealed interface Screen {
                     title = "list",
                     items = listOf(
                         ActionMenuItem.NeverShownWithIcon(
-                            title = "Info",
-                            onClick = {},
+                            title = "EN",
+                            onClick = {
+                                _buttons.tryEmit(AppBarIcons.English)
+                            },
                         ),
                         ActionMenuItem.NeverShownWithIcon(
-                            title = "Contact Us",
-                            onClick = {},
+                            title = "ES",
+                            onClick = {
+                                _buttons.tryEmit(AppBarIcons.Spanish)
+                            },
                         ),
                     )
                 )

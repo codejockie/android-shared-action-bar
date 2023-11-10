@@ -1,0 +1,25 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="menu">Elementos del menú</string>
+    <string name="many_action_bar_items_screen">Pantalla de muchos elementos de la barra de acciones</string>
+    <string name="no_app_bar_screen">Sin pantalla en la barra de la aplicación</string>
+    <string name="app_content">Contenido de la aplicación</string>
+    <string name="search">Buscar</string>
+    <string name="favourite">Favorito</string>
+    <string name="refresh">Actualizar</string>
+    <string name="settings">Configuración</string>
+    <string name="landing_url">" Visítanos en <xliff:g id="application_homepage">https://xyz.com/</xliff:g> para saber más."</string>
+    <string name="greeting">Hola,
+      <xliff:g name="name" example="Joe">%s</xliff:g>
+    </string>
+    <string name="clicked_on">Hecho clic en
+      <xliff:g name="name" example="Element">%s</xliff:g>
+    </string>
+    <plurals name="heading_transaction">
+        <item quantity="one">Transacción</item>
+        <item quantity="other">Transacciones</item>
+        <item quantity="many">Transacciones</item>
+    </plurals>
+    <string name="settings_content">Contenido de la configuración</string>
+    <string name="no_app_bar_content">Sin contenido de la barra de la aplicación</string>
+    <string name="many_options_content">Contenido de muchas opciones</string>
+</resources>

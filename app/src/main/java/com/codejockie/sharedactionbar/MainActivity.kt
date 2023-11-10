@@ -1,8 +1,9 @@
 package com.codejockie.sharedactionbar
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,11 +30,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,10 +46,12 @@ import com.codejockie.sharedactionbar.ui.theme.SharedActionBarTheme
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             SharedActionBarTheme {
                 val navController = rememberNavController()
@@ -76,7 +83,12 @@ class MainActivity : ComponentActivity() {
                                 toNoAppBarScreen = { navController.navigate(NoAppBarRoute) },
                                 toManyOptionsScreen = { navController.navigate(ManyOptionsRoute) },
                                 modifier = Modifier
-                                    .fillMaxSize()
+                                    .fillMaxSize(),
+                                onLangChange = {
+                                    AppCompatDelegate.setApplicationLocales(
+                                        LocaleListCompat.forLanguageTags(it)
+                                    )
+                                }
                             )
                         }
                         composable(
@@ -173,14 +185,18 @@ fun HomeScreen(
     toNoAppBarScreen: () -> Unit,
     toManyOptionsScreen: () -> Unit,
     modifier: Modifier = Modifier,
+    onLangChange: (String) -> Unit,
 ) {
     val screen = appBarState.currentScreen as? Screen.Home
+    val fontSize = rememberSaveable { mutableStateOf(value = 14.sp) }
 
     LaunchedEffect(key1 = screen) {
         screen?.buttons
             ?.onEach { button ->
                 when (button) {
                     Screen.Home.AppBarIcons.Settings -> onSettingsClick()
+                    Screen.Home.AppBarIcons.English -> onLangChange("en")
+                    Screen.Home.AppBarIcons.Spanish -> onLangChange("es")
                 }
             }
             ?.launchIn(this)
@@ -197,14 +213,26 @@ fun HomeScreen(
                 onClick = toManyOptionsScreen
             ) {
                 Text(
-                    text = "Many action bar items screen"
+                    fontSize = fontSize.value,
+                    text = stringResource(R.string.many_action_bar_items_screen),
+                    onTextLayout = {
+                        if (it.didOverflowWidth) {
+                            fontSize.value *= 0.9f
+                        }
+                    }
                 )
             }
             Button(
                 onClick = toNoAppBarScreen
             ) {
                 Text(
-                    text = "No app bar screen"
+                    text = stringResource(R.string.no_app_bar_screen),
+                    fontSize = fontSize.value,
+                    onTextLayout = {
+                        if (it.didOverflowWidth) {
+                            fontSize.value *= 0.9f
+                        }
+                    }
                 )
             }
         }
@@ -228,7 +256,7 @@ fun PlaygroundApp() {
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "App content"
+                text = stringResource(R.string.app_content)
             )
         }
     }
@@ -251,25 +279,25 @@ fun HomeTopAppBar(
             ActionsMenu(
                 items = listOf(
                     ActionMenuItem.IconMenuItem.AlwaysShown(
-                        title = "Search",
-                        contentDescription = "Search",
+                        title = stringResource(R.string.search),
+                        contentDescription = stringResource(R.string.search),
                         onClick = {},
                         icon = Icons.Outlined.Search,
                     ),
                     ActionMenuItem.IconMenuItem.AlwaysShown(
-                        title = "Favourite",
-                        contentDescription = "Favourite",
+                        title = stringResource(R.string.favourite),
+                        contentDescription = stringResource(R.string.favourite),
                         onClick = {},
                         icon = Icons.Outlined.FavoriteBorder,
                     ),
                     ActionMenuItem.IconMenuItem.ShownIfRoom(
-                        title = "Refresh",
-                        contentDescription = "Refresh",
+                        title = stringResource(R.string.refresh),
+                        contentDescription = stringResource(R.string.refresh),
                         onClick = {},
                         icon = Icons.Outlined.Refresh
                     ),
                     ActionMenuItem.NeverShown(
-                        title = "Settings",
+                        title = stringResource(R.string.settings),
                         onClick = {},
                     ),
                     ActionMenuItem.NeverShown(

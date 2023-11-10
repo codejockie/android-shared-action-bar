@@ -1,4 +1,31 @@
-<resources>
-    <string name="app_name">SharedActionBar</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" translatable="false">SharedActionBar</string>
     <string name="menu">Menu Items</string>
+    <string name="many_action_bar_items_screen">Many action bar items screen</string>
+    <string name="no_app_bar_screen">No app bar screen</string>
+    <string name="app_content">App content</string>
+    <string name="search">Search</string>
+    <string name="favourite">Favourite</string>
+    <string name="refresh">Refresh</string>
+    <string name="settings">Settings</string>
+    <string name="landing_url"> Visit us at <xliff:g id="application_homepage">https://xyz.com/</xliff:g> to know more.</string>
+    <string name="greeting">Hello,
+      <xliff:g name="name" example="Joe">%s</xliff:g>
+    </string>
+    <string name="clicked_on">Clicked on
+      <xliff:g name="name" example="Element">%s</xliff:g>
+    </string>
+    <string name="settings_content">Settings content</string>
+    <string name="no_app_bar_content">No App Bar content</string>
+    <string name="many_options_content">Many options content</string>
+    <plurals name="heading_transaction">
+        <!--
+              As a developer, you should always supply "one" and "other"
+              strings. Your translators will know which strings are actually
+              needed for their language. More information on attributes on
+              https://developer.android.com/guide/topics/resources/string-resource
+         -->
+        <item quantity="one">Transaction</item>
+        <item quantity="other">Transactions</item>
+    </plurals>
 </resources>

@@ -1,5 +1,6 @@
 package com.codejockie.sharedactionbar
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
@@ -10,11 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -27,12 +30,14 @@ fun ManyOptionsScreen(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     val screen = appBarState.currentScreen as? Screen.ManyOptions
-    var favouritesEnabled by remember { mutableStateOf(false) }
+    var favouritesEnabled by rememberSaveable { mutableStateOf(false) }
 
-    fun showSnackbar(text: String) {
+    fun showSnackbar(@StringRes id: Int, name: String) {
+        val message = context.getString(id, name)
         scope.launch {
-            snackbarHostState.showSnackbar(message = text)
+            snackbarHostState.showSnackbar(message = message)
         }
     }
 
@@ -46,7 +51,7 @@ fun ManyOptionsScreen(
                     Screen.ManyOptions.AppBarIcons.Refresh,
                     Screen.ManyOptions.AppBarIcons.Settings,
                     Screen.ManyOptions.AppBarIcons.About -> showSnackbar(
-                        "Clicked on ${button.name}"
+                        R.string.clicked_on, button.name
                     )
 
                     Screen.ManyOptions.AppBarIcons.Favourite -> {
@@ -64,6 +69,6 @@ fun ManyOptionsScreen(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = "Many options content")
+        Text(text = stringResource(R.string.many_options_content))
     }
 }

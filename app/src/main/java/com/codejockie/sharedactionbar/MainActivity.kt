@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -188,7 +189,7 @@ fun HomeScreen(
     onLangChange: (String) -> Unit,
 ) {
     val screen = appBarState.currentScreen as? Screen.Home
-    val fontSize = rememberSaveable { mutableStateOf(value = 14.sp) }
+    val fontSize = rememberSaveable { mutableFloatStateOf(value = 14f) }
 
     LaunchedEffect(key1 = screen) {
         screen?.buttons
@@ -213,11 +214,11 @@ fun HomeScreen(
                 onClick = toManyOptionsScreen
             ) {
                 Text(
-                    fontSize = fontSize.value,
+                    fontSize = fontSize.floatValue.sp,
                     text = stringResource(R.string.many_action_bar_items_screen),
                     onTextLayout = {
                         if (it.didOverflowWidth) {
-                            fontSize.value *= 0.9f
+                            fontSize.floatValue *= 0.9f
                         }
                     }
                 )
@@ -227,10 +228,10 @@ fun HomeScreen(
             ) {
                 Text(
                     text = stringResource(R.string.no_app_bar_screen),
-                    fontSize = fontSize.value,
+                    fontSize = fontSize.floatValue.sp,
                     onTextLayout = {
                         if (it.didOverflowWidth) {
-                            fontSize.value *= 0.9f
+                            fontSize.floatValue *= 0.9f
                         }
                     }
                 )
